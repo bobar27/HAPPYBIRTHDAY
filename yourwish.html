@@ -105,9 +105,27 @@
 
     let score = 0;
     let cakes = [];
-    let catcher = { x: canvas.width / 2 - 25, y: canvas.height - 50, width: 50, height: 40, img: null };
+    let catcher = { x: 0, y: 0, width: 50, height: 40, img: null };
     let cakeImg = null;
     let gameRunning = false;
+
+    function resizeCanvas() {
+      const maxWidth = 400;
+      const aspectRatio = 1;
+      let width = Math.min(window.innerWidth * 0.9, maxWidth);
+      let height = width;
+      canvas.width = width;
+      canvas.height = height;
+      canvas.style.width = width + 'px';
+      canvas.style.height = height + 'px';
+      catcher.width = width * 0.125; // 50/400
+      catcher.height = height * 0.1; // 40/400
+      catcher.x = width / 2 - catcher.width / 2;
+      catcher.y = height - catcher.height - 10;
+    }
+
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
 
     // Load catcher image
     const catcherImg = new Image();
@@ -140,7 +158,7 @@
       e.preventDefault();
       if (gameRunning) {
         leftInterval = setInterval(() => {
-          catcher.x -= 7;
+          catcher.x -= canvas.width * 0.0175;
           if (catcher.x < 0) catcher.x = 0;
         }, 30);
       }
@@ -154,7 +172,7 @@
       e.preventDefault();
       if (gameRunning) {
         leftInterval = setInterval(() => {
-          catcher.x -= 7;
+          catcher.x -= canvas.width * 0.0175;
           if (catcher.x < 0) catcher.x = 0;
         }, 30);
       }
@@ -168,7 +186,7 @@
       e.preventDefault();
       if (gameRunning) {
         rightInterval = setInterval(() => {
-          catcher.x += 7;
+          catcher.x += canvas.width * 0.0175;
           if (catcher.x > canvas.width - catcher.width) catcher.x = canvas.width - catcher.width;
         }, 30);
       }
@@ -182,7 +200,7 @@
       e.preventDefault();
       if (gameRunning) {
         rightInterval = setInterval(() => {
-          catcher.x += 8;
+          catcher.x += canvas.width * 0.0175;
           if (catcher.x > canvas.width - catcher.width) catcher.x = canvas.width - catcher.width;
         }, 30);
       }
@@ -212,8 +230,9 @@
 
     function update() {
       // Add new cake
+      const cakeSize = canvas.width * 0.075;
       if (Math.random() < 0.005) {
-        cakes.push({ x: Math.random() * (canvas.width - 30), y: 0, width: 30, height: 30 });
+        cakes.push({ x: Math.random() * (canvas.width - cakeSize), y: 0, width: cakeSize, height: cakeSize });
       }
 
       // Update cakes
