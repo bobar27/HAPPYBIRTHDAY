@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Birthday Surprise</title>
+<link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400..700&display=swap" rel="stylesheet" />
+<style>
+  body {
+    background: url('d1e1cc770dbf7a79e9d4a82690f647ac.jpg') no-repeat center center fixed;
+    background-size: cover;
+    font-family: 'Dancing Script', cursive;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+  }
+  .wish-container {
+    background-color: #fff0f5;
+    border: 3px solid #ffb6c1;
+    border-radius: 20px;
+    box-shadow: 0 8px 15px rgba(255, 182, 193, 0.5);
+    width: 90%;
+    max-width: 600px;
+    padding: 30px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  h2 {
+    color: #d6336c;
+    margin-bottom: 20px;
+    font-size: 2.5rem;
+  }
+  textarea {
+    width: 100%;
+    height: 300px;
+    border-radius: 15px;
+    border: 2px solid #ff69b4;
+    padding: 15px;
+    font-size: 1.5rem;
+    font-family: 'Dancing Script', cursive;
+    resize: none;
+    box-shadow: 0 0 10px rgba(255, 105, 180, 0.5);
+    outline: none;
+    transition: border-color 0.3s ease;
+  }
+  textarea:focus {
+    border-color: #d6336c;
+    box-shadow: 0 0 15px rgba(214, 51, 108, 0.7);
+  }
+  button {
+    margin-top: 20px;
+    background-color: #ffb6c1;
+    border: none;
+    border-radius: 25px;
+    padding: 12px 30px;
+    font-size: 1.5rem;
+    color: white;
+    cursor: pointer;
+    box-shadow: 0 6px 12px rgba(255, 182, 193, 0.6);
+    transition: background-color 0.3s ease;
+  }
+  button:hover {
+    background-color: #ff69b4;
+  }
+</style>
+</head>
+<body>
+  <div class="wish-container">
+    <h2>🎂 Catch the Cakes! 🎂</h2>
+    <canvas id="gameCanvas" width="400" height="400" style="border: 2px solid #ffb6c1; border-radius: 10px;"></canvas>
+    <div id="score">Score: 0</div>
+    <div id="controls" style="display: none;">
+      <button id="leftBtn">← Left</button>
+      <button id="rightBtn">Right →</button>
+    </div>
+    <div id="congratulation" style="display: none; text-align: center;">
+      <h3>🎉 Congratulations! 🎉</h3>
+      <p>You reached the maximum score of 50!</p>
+      <p>Happy Birthday!</p>
+    </div>
+    <button id="startGame">Start Game</button>
+  </div>
+  <script>
+    const canvas = document.getElementById('gameCanvas');
+    const ctx = canvas.getContext('2d');
+    const scoreDisplay = document.getElementById('score');
+    const startBtn = document.getElementById('startGame');
+    const controls = document.getElementById('controls');
+    const congratulation = document.getElementById('congratulation');
+    const leftBtn = document.getElementById('leftBtn');
+    const rightBtn = document.getElementById('rightBtn');
+
+    let score = 0;
+    let cakes = [];
+    let catcher = { x: canvas.width / 2 - 25, y: canvas.height - 50, width: 50, height: 40, img: null };
+    let cakeImg = null;
+    let gameRunning = false;
+
+    // Load catcher image
+    const catcherImg = new Image();
+    catcherImg.src = 'devira5.jpeg';
+    catcherImg.onload = () => {
+      catcher.img = catcherImg;
+    };
+
+    // Load cake image
+    const cakeImage = new Image();
+    cakeImage.src = 'cake.jpg';
+    cakeImage.onload = () => {
+      cakeImg = cakeImage;
+    };
+
+    startBtn.addEventListener('click', startGame);
+
+    canvas.addEventListener('mousemove', (e) => {
+      if (gameRunning && window.innerWidth > 768) { // Desktop
+        const rect = canvas.getBoundingClientRect();
+        catcher.x = e.clientX - rect.left - catcher.width / 2;
+        if (catcher.x < 0) catcher.x = 0;
+        if (catcher.x > canvas.width - catcher.width) catcher.x = canvas.width - catcher.width;
+      }
+    });
+
+    leftBtn.addEventListener('touchstart', (e) => {
+      e.preventDefault();
+      if (gameRunning) catcher.x -= 10;
+      if (catcher.x < 0) catcher.x = 0;
+    });
+
+    rightBtn.addEventListener('touchstart', (e) => {
+      e.preventDefault();
+      if (gameRunning) catcher.x += 10;
+      if (catcher.x > canvas.width - catcher.width) catcher.x = canvas.width - catcher.width;
+    });
+
+    function startGame() {
+      score = 0;
+      cakes = [];
+      gameRunning = true;
+      canvas.style.display = 'block';
+      scoreDisplay.style.display = 'block';
+      congratulation.style.display = 'none';
+      startBtn.style.display = 'none';
+      if (window.innerWidth <= 768) {
+        controls.style.display = 'block';
+      }
+      gameLoop();
+    }
+
+    function gameLoop() {
+      if (!gameRunning) return;
+      update();
+      draw();
+      requestAnimationFrame(gameLoop);
+    }
+
+    function update() {
+      // Add new cake
+      if (Math.random() < 0.01) {
+        cakes.push({ x: Math.random() * (canvas.width - 30), y: 0, width: 30, height: 30 });
+      }
+
+      // Update cakes
+      cakes.forEach((cake, index) => {
+        cake.y += 1;
+        if (cake.y > canvas.height) {
+          cakes.splice(index, 1);
+        } else if (cake.y + cake.height >= catcher.y && cake.x < catcher.x + catcher.width && cake.x + cake.width > catcher.x) {
+          if (score < 50) score++;
+          cakes.splice(index, 1);
+        }
+      });
+
+      scoreDisplay.textContent = 'Score: ' + score;
+      if (score >= 50) {
+        gameRunning = false;
+        canvas.style.display = 'none';
+        scoreDisplay.style.display = 'none';
+        controls.style.display = 'none';
+        congratulation.style.display = 'block';
+        startBtn.style.display = 'block';
+        startBtn.textContent = 'Play Again';
+      }
+    }
+
+    function draw() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      // Draw catcher
+      if (catcher.img) {
+        ctx.drawImage(catcher.img, catcher.x, catcher.y, catcher.width, catcher.height);
+      } else {
+        ctx.fillStyle = '#ffb6c1';
+        ctx.fillRect(catcher.x, catcher.y, catcher.width, catcher.height);
+      }
+
+      // Draw cakes
+      cakes.forEach(cake => {
+        if (cakeImg) {
+          ctx.drawImage(cakeImg, cake.x, cake.y, cake.width, cake.height);
+        } else {
+          ctx.fillStyle = '#ff69b4';
+          ctx.fillRect(cake.x, cake.y, cake.width, cake.height);
+        }
+      });
+    }
+
+    // Stop game after 30 seconds
+    setTimeout(() => {
+      gameRunning = false;
+      startBtn.style.display = 'block';
+      startBtn.textContent = 'Play Again';
+      controls.style.display = 'none';
+      alert('Game Over! Final Score: ' + score + '. Happy Birthday!');
+    }, 30000);
+  </script>
+  <script>
+    // List of jpg images to use as background
+    const bgImages = [
+      'birthday1.jpeg',
+      'birthday2.jpeg',
+      'birthday3.jpeg',
+      'birthday4.jpeg',
+    ];
+
+    // Function to create and position background images near corners with limited rotation
+    function createBackgroundImages() {
+      const positions = [
+        { top: '5vh', left: '5vw' },       // top-left
+        { top: '5vh', right: '5vw' },      // top-right
+        { bottom: '5vh', left: '5vw' },    // bottom-left
+        { bottom: '5vh', right: '5vw' },   // bottom-right
+        { top: '45vh', left: '45vw' }      // center-ish
+      ];
+      bgImages.forEach((src, index) => {
+        const img = document.createElement('img');
+        img.src = src;
+        img.style.position = 'absolute';
+        img.style.maxWidth = '200px';
+        img.style.maxHeight = '200px';
+        img.style.opacity = '1';
+        img.style.userSelect = 'none';
+        img.style.pointerEvents = 'none';
+        img.style.zIndex = '0';
+        const pos = positions[index % positions.length];
+        for (const prop in pos) {
+          img.style[prop] = pos[prop];
+        }
+        // Limit rotation to -15 to +15 degrees
+        const rotation = (Math.random() * 30) - 15;
+        img.style.transform = `rotate(${rotation}deg)`;
+        document.body.appendChild(img);
+      });
+    }
+
+    createBackgroundImages();
+  </script>
+</body>
+</html>

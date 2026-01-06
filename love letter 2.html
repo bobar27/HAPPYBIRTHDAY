@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>Birthday Card for Devira</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400..700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="love letter 2.css" />
+</head>
+<body>
+  <!-- tiktok meowish -->
+  <div class="envelope-wrapper">
+    <div id="envelope" class="close">
+      <div class="front flap"></div>
+      <div class="front pocket"></div>
+      <div class="letter">
+        <div class="words line1">To: Devira</div>
+        <div class="words line2">Happy Birthday</div>
+        <div class="words line3">here's a card for you</div>
+        <div class="words line4">hope you enjoy</div>
+      </div>
+      <div class="hearts">
+        <div class="heart a1"></div>
+        <div class="heart a2"></div>
+        <div class="heart a3"></div>
+      </div>
+    </div>
+  </div>
+  <div class="reset">
+    <button id="open">Open</button>
+    <button id="reset">Close</button>
+  </div>
+
+    <div id="overlay" class="overlay hidden">
+      <div class="overlay-photos-left">
+          <img src="devira1.jpg" alt="Polaroid 1" class="overlay-polaroid-photo" />
+          <img src="devira2.jpg" alt="Polaroid 2" class="overlay-polaroid-photo" />
+      </div>
+      <div class="overlay-content">
+        <button id="close-overlay" class="close-overlay">×</button>
+        <div class="overlay-text-content">
+          <h2>Happy Birthday</h2>
+          <p>Hi Dev, happy birthday! You are the best girlfriend I could ever ask for.</p>
+          <p>Your heartwarming words, your gentle touch, you just being beside me.</p>
+          <p>There is a warm feeling when I'm with you that gives me comfort and I hope you don't feel disturbed by me being clingy and needy, I rarely felt it.</p>
+          <p>You changed me even though you don't know about it, you are the only person that makes me express my emotion without even trying, and even you give me courage to study not only in school but even in my home, I fixed my sleep schedule as you told me to.</p>
+          <p>may this chapter of your lifes be greater than the last,i will be always be by your side.</p>
+          <p>Thanks for loving a person like me Dev. Wishing you a fantastic birthday filled with joy and love!</p>
+        </div>
+        <button id="next-button" class="next-button hidden">Next</button>
+      </div>
+      <div class="overlay-photos-right">
+          <img src="devira3.jpg" alt="Polaroid 3" class="overlay-polaroid-photo" />
+          <img src="devira4.jpeg" alt="Polaroid 4" class="overlay-polaroid-photo" />
+      </div>
+    </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="love letter 2.js"></script>
+  <script>
+    // List of jpg images to use as background
+    const bgImages = [
+      'birthday1.jpeg',
+      'birthday2.jpeg',
+      'birthday3.jpeg',
+      'birthday4.jpeg',
+    ];
+
+    // Function to create and position background images near corners with limited rotation
+    function createBackgroundImages() {
+      const positions = [
+        { top: '5vh', left: '5vw' },       // top-left
+        { top: '5vh', right: '5vw' },      // top-right
+        { bottom: '5vh', left: '5vw' },    // bottom-left
+        { bottom: '5vh', right: '5vw' },   // bottom-right
+        { top: '45vh', left: '45vw' }      // center-ish
+      ];
+      bgImages.forEach((src, index) => {
+        const img = document.createElement('img');
+        img.src = src;
+        img.style.position = 'absolute';
+        img.style.maxWidth = '200px';
+        img.style.maxHeight = '200px';
+        img.style.opacity = '1';
+        img.style.userSelect = 'none';
+        img.style.pointerEvents = 'none';
+        img.style.zIndex = '0';
+        const pos = positions[index % positions.length];
+        for (const prop in pos) {
+          img.style[prop] = pos[prop];
+        }
+        // Limit rotation to -15 to +15 degrees
+        const rotation = (Math.random() * 30) - 15;
+        img.style.transform = `rotate(${rotation}deg)`;
+        document.body.appendChild(img);
+      });
+    }
+
+    createBackgroundImages();
+  </script>
+</body>
+</html>

@@ -1,0 +1,6 @@
+- [x] Update password.html: Change title and text to birthday theme, keep colors.
+- [x] Update love letter 2.html: Change title, envelope text to "Happy Birthday".
+- [x] Update overlay text in love letter 2.html to birthday message.
+- [x] Keep CSS colors as is (pink theme).
+- [x] Change yourwish.html to a birthday surprise page (e.g., quiz or facts).
+- [x] Test the flow.
