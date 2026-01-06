@@ -261,46 +261,5 @@
       });
     }
   </script>
-  <script>
-    // List of jpg images to use as background
-    const bgImages = [
-      'birthday1.jpeg',
-      'birthday2.jpeg',
-      'birthday3.jpeg',
-      'birthday4.jpeg',
-    ];
-
-    // Function to create and position background images near corners with limited rotation
-    function createBackgroundImages() {
-      const positions = [
-        { top: '5vh', left: '5vw' },       // top-left
-        { top: '5vh', right: '5vw' },      // top-right
-        { bottom: '5vh', left: '5vw' },    // bottom-left
-        { bottom: '5vh', right: '5vw' },   // bottom-right
-        { top: '45vh', left: '45vw' }      // center-ish
-      ];
-      bgImages.forEach((src, index) => {
-        const img = document.createElement('img');
-        img.src = src;
-        img.style.position = 'absolute';
-        img.style.maxWidth = '200px';
-        img.style.maxHeight = '200px';
-        img.style.opacity = '1';
-        img.style.userSelect = 'none';
-        img.style.pointerEvents = 'none';
-        img.style.zIndex = '0';
-        const pos = positions[index % positions.length];
-        for (const prop in pos) {
-          img.style[prop] = pos[prop];
-        }
-        // Limit rotation to -15 to +15 degrees
-        const rotation = (Math.random() * 30) - 15;
-        img.style.transform = `rotate(${rotation}deg)`;
-        document.body.appendChild(img);
-      });
-    }
-
-    createBackgroundImages();
-  </script>
 </body>
 </html>
