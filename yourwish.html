@@ -237,7 +237,7 @@
 
       // Update cakes
       cakes.forEach((cake, index) => {
-        cake.y += 0.5;
+        cake.y += 0.7;
         if (cake.y > canvas.height) {
           cakes.splice(index, 1);
         } else if (cake.y + cake.height >= catcher.y && cake.x < catcher.x + catcher.width && cake.x + cake.width > catcher.x) {
